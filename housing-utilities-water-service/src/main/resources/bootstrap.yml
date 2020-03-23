@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: housing-utilities-water-service
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL}
+      username: user
+      password: root
+      fail-fast: true
+#CONFIG_SERVER_URL: http://localhost:8888
+#EUREKA_SERVER_URL: http://localhost:8761
+#AUTH_SERVER_URL: http://localhost:8090
+#DB_URL: localhost:3306
+#KAFKA_URL: localhost:9092

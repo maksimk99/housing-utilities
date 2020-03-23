@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: housing-utilities-maintenance
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL}
+      username: user
+      password: root
+      fail-fast: true

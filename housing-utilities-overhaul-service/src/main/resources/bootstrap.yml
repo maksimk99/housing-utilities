@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: housing-utilities-overhaul-service
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL}
+      username: user
+      password: root
+      fail-fast: true
+  main:
+    allow-bean-definition-overriding: true

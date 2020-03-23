@@ -1,0 +1,172 @@
+version: '3'
+
+volumes:
+  mysql-db:
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  db:
+    image: maksimk99/mysql_db
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: 16111999m
+      MYSQL_DATABASE: housing_utilities
+    volumes:
+      - mysql-db:/var/lib/mysql
+    ports:
+      - 3306:3306
+  configserver:
+    image: maksimk99/config_server
+    container_name: config_server
+  eurekaserver:
+    image: maksimk99/eureka_server
+    container_name: eureka_server
+    environment:
+      CONFIG_SERVER_URL: http://configserver:8888
+    command: ./wait-for-it.sh configserver:8888 -- java -jar /app.jar
+    depends_on:
+      - configserver
+  zuulserver:
+    image: maksimk99/zuul_server
+    container_name: zuul_server
+    environment:
+      CONFIG_SERVER_URL: http://configserver:8888
+      EUREKA_SERVER_URL: http://eurekaserver:8761
+    command: ./wait-for-it.sh configserver:8888 -- ./wait-for-it.sh db:3306 -- java -jar /app.jar
+    depends_on:
+      - eurekaserver
+      - configserver
+    ports:
+      - 8089:8089
+  authserver:
+    image: maksimk99/auth_server
+    container_name: auth_server
+    environment:
+      CONFIG_SERVER_URL: http://configserver:8888
+      EUREKA_SERVER_URL: http://eurekaserver:8761
+      DB_URL: db:3306
+    command: ./wait-for-it.sh configserver:8888 -- ./wait-for-it.sh db:3306 -- java -jar /app.jar
+    depends_on:
+      - eurekaserver
+      - configserver
+      - db
+    ports:
+      - 8090:8090
+  electricityservice:
+    image: maksimk99/electricity_service
+    container_name: electricity_service
+    environment:
+      CONFIG_SERVER_URL: http://configserver:8888
+      EUREKA_SERVER_URL: http://eurekaserver:8761
+      AUTH_SERVER_URL: http://authserver:8090
+      KAFKA_URL: PLAINTEXT://kafka:9092
+      DB_URL: db:3306
+    command: ./wait-for-it.sh configserver:8888 -- ./wait-for-it.sh kafka:9092 -- ./wait-for-it.sh db:3306 -- java -jar /app.jar
+    depends_on:
+      - configserver
+      - kafka
+      - db
+  elevatormaintenance:
+    image: maksimk99/elevator_maintenance
+    container_name: elevator_maintenance
+    environment:
+      CONFIG_SERVER_URL: http://configserver:8888
+      EUREKA_SERVER_URL: http://eurekaserver:8761
+      AUTH_SERVER_URL: http://authserver:8090
+      KAFKA_URL: PLAINTEXT://kafka:9092
+      DB_URL: db:3306
+    command: ./wait-for-it.sh configserver:8888 -- ./wait-for-it.sh kafka:9092 -- ./wait-for-it.sh db:3306 -- java -jar /app.jar
+    depends_on:
+      - configserver
+      - kafka
+      - db
+  maintenanceservice:
+    image: maksimk99/maintenance_service
+    container_name: maintenance_service
+    environment:
+      CONFIG_SERVER_URL: http://configserver:8888
+      EUREKA_SERVER_URL: http://eurekaserver:8761
+      AUTH_SERVER_URL: http://authserver:8090
+      KAFKA_URL: PLAINTEXT://kafka:9092
+      DB_URL: db:3306
+    command: ./wait-for-it.sh configserver:8888 -- ./wait-for-it.sh kafka:9092 -- ./wait-for-it.sh db:3306 -- java -jar /app.jar
+    depends_on:
+      - configserver
+      - kafka
+      - db
+  overhaulservice:
+    image: maksimk99/overhaul_service
+    container_name: overhaul_service
+    environment:
+      CONFIG_SERVER_URL: http://configserver:8888
+      EUREKA_SERVER_URL: http://eurekaserver:8761
+      AUTH_SERVER_URL: http://authserver:8090
+      KAFKA_URL: PLAINTEXT://kafka:9092
+      DB_URL: db:3306
+    command: ./wait-for-it.sh configserver:8888 -- ./wait-for-it.sh kafka:9092 -- ./wait-for-it.sh db:3306 -- java -jar /app.jar
+    depends_on:
+      - configserver
+      - kafka
+      - db
+  waterservice:
+    image: maksimk99/water_service
+    container_name: water_service
+    environment:
+      CONFIG_SERVER_URL: http://configserver:8888
+      EUREKA_SERVER_URL: http://eurekaserver:8761
+      AUTH_SERVER_URL: http://authserver:8090
+      KAFKA_URL: PLAINTEXT://kafka:9092
+      DB_URL: db:3306
+    command: ./wait-for-it.sh configserver:8888 -- ./wait-for-it.sh kafka:9092 -- ./wait-for-it.sh db:3306 -- java -jar /app.jar
+    depends_on:
+      - configserver
+      - kafka
+      - db
+  waterdisposal:
+    image: maksimk99/water_disposal
+    container_name: water_disposal
+    environment:
+      CONFIG_SERVER_URL: http://configserver:8888
+      EUREKA_SERVER_URL: http://eurekaserver:8761
+      AUTH_SERVER_URL: http://authserver:8090
+      KAFKA_URL: PLAINTEXT://kafka:9092
+      DB_URL: db:3306
+    command: ./wait-for-it.sh configserver:8888 -- ./wait-for-it.sh kafka:9092 -- ./wait-for-it.sh db:3306 -- java -jar /app.jar
+    depends_on:
+      - configserver
+      - kafka
+      - db
+  counterservice:
+    image: maksimk99/counter_service
+    container_name: counter_service
+    environment:
+      CONFIG_SERVER_URL: http://configserver:8888
+      KAFKA_URL: PLAINTEXT://kafka:9092
+      DB_URL: db:3306
+    command: ./wait-for-it.sh configserver:8888 -- ./wait-for-it.sh kafka:9092 -- ./wait-for-it.sh db:3306 -- java -jar /app.jar
+    depends_on:
+      - db
+      - kafka
+      - configserver
+    ports:
+      - 8091:8091
+  clientapp:
+    image: maksimk99/client_app
+    container_name: client_app
+    command: /wait-for-it.sh authserver:8090 -- /wait-for-it.sh zuulserver:8089 -- npm start
+    depends_on:
+      - authserver
+      - zuulserver
+    ports:
+    - 3000:3000
