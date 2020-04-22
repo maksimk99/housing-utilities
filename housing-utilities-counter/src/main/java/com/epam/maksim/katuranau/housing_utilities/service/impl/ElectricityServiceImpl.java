@@ -29,19 +29,6 @@ public class ElectricityServiceImpl implements ElectricityService {
 
     @Async
     public void process(final List<Integer> userIds) {
-//        LocalDate startDate = LocalDate.of(2019, 9, 1);
-//        LocalDate endDate = LocalDate.now();
-//        while (!startDate.isAfter(endDate)) {
-//            final LocalDate currentDate = startDate;
-//            userIds.forEach(userId -> {
-//                Message message = new Message()
-//                        .setDate(currentDate)
-//                        .setUserId(userId)
-//                        .setAmountOfResourcesSpent(generateAmountOfResourcesSpent());
-//                sendMessage(message);
-//            });
-//            startDate = startDate.plusDays(1);
-//        }
         userIds.forEach(userId -> {
             Message message = new Message()
                     .setDate(LocalDate.now())
@@ -49,6 +36,23 @@ public class ElectricityServiceImpl implements ElectricityService {
                     .setAmountOfResourcesSpent(generateAmountOfResourcesSpent());
             sendMessage(message);
         });
+    }
+
+    @Async
+    public void populateData(final List<Integer> userIds) {
+        LocalDate startDate = LocalDate.of(2019, 11, 1);
+        LocalDate endDate = LocalDate.now();
+        while (!startDate.isAfter(endDate)) {
+            final LocalDate currentDate = startDate;
+            userIds.forEach(userId -> {
+                Message message = new Message()
+                        .setDate(currentDate)
+                        .setUserId(userId)
+                        .setAmountOfResourcesSpent(generateAmountOfResourcesSpent());
+                sendMessage(message);
+            });
+            startDate = startDate.plusDays(1);
+        }
     }
 
     private BigDecimal generateAmountOfResourcesSpent() {

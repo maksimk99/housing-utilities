@@ -27,7 +27,7 @@ To run this project, install docker and docker compose.
 * [Install Docker on Windows](https://docs.docker.com/docker-for-windows/install/)
 * [Install Docker Compose](https://docs.docker.com/compose/install/)
 
-Copy [docker-compose.yml](https://github.com/maksimk99/docker/blob/master/docker-compose.yml) file, 
+Copy [docker-compose.yml](https://github.com/maksimk99/housing-utilities/blob/master/docker/docker-compose.yml) file, 
 then go to the directory with this file and run following command in console:
 ```
 docker-compose up

@@ -50,4 +50,13 @@ public class ProcessingServiceImpl implements ProcessingService {
         elevatorMaintenanceService.process(userIds);
         maintenanceAndOverhaulService.process(userIds);
     }
+
+    public void populateData() {
+        List<Integer> userIds = userDao.getUsersIdList();
+        electricityService.populateData(userIds);
+        waterService.populateData(userIds);
+        waterDisposalService.populateData(userIds);
+        elevatorMaintenanceService.populateData(userIds);
+        maintenanceAndOverhaulService.populateData(userIds);
+    }
 }

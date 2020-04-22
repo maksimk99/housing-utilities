@@ -5,4 +5,6 @@ import java.util.List;
 public interface WaterDisposalService {
 
     void process(List<Integer> userIds);
+
+    void populateData(List<Integer> userIds);
 }

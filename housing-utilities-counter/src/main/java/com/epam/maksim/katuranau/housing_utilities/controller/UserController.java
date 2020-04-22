@@ -15,9 +15,8 @@ public class UserController {
         this.processingService = processingService;
     }
 
-    @GetMapping("/send")
+    @GetMapping("/papulateData")
     public void send() {
-        processingService.processEveryDay();
-        processingService.processEveryMonth();
+        processingService.populateData();
     }
 }

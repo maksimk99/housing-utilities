@@ -5,4 +5,6 @@ public interface ProcessingService {
     void processEveryDay();
 
     void processEveryMonth();
+
+    void populateData();
 }
