@@ -18,7 +18,7 @@ import java.util.Set;
 @Repository
 public class UserInfoService {
 
-    private UserDetailsRepository userDetailsRepository;
+    private final UserDetailsRepository userDetailsRepository;
 
     @Autowired
     public UserInfoService(final UserDetailsRepository userDetailsRepository) {
@@ -27,6 +27,10 @@ public class UserInfoService {
 
     public UserInfo getUserInfoByUserName(String userName) {
         return userDetailsRepository.findByUserName(userName);
+    }
+
+    public List<Integer> getUsersIdList() {
+        return userDetailsRepository.getUsersIdList();
     }
 
     public List<UserInfo> getAllActiveUserInfo() {

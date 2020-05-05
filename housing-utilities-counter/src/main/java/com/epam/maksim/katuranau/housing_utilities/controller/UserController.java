@@ -15,7 +15,7 @@ public class UserController {
         this.processingService = processingService;
     }
 
-    @GetMapping("/papulateData")
+    @GetMapping("/populateData")
     public void send() {
         processingService.populateData();
     }

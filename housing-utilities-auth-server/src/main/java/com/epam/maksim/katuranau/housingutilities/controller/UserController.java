@@ -10,8 +10,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -48,5 +50,11 @@ public class UserController {
         }
         userService.addUser(user);
         return "redirect:" + LOGIN_URL;
+    }
+
+    @GetMapping("/user/id/list")
+    public @ResponseBody
+    List<Integer> getUsersIdList() {
+        return userService.getUsersIdList();
     }
 }

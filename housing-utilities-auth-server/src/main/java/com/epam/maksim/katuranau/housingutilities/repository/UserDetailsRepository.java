@@ -1,6 +1,7 @@
 package com.epam.maksim.katuranau.housingutilities.repository;
 
 import com.epam.maksim.katuranau.housingutilities.model.UserInfo;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,7 @@ public interface UserDetailsRepository extends CrudRepository<UserInfo, String> 
     UserInfo findByUserId(Integer id);
 
     void deleteByUserId(Integer id);
+
+    @Query("SELECT u.userId FROM UserInfo as u")
+    List<Integer> getUsersIdList();
 }
